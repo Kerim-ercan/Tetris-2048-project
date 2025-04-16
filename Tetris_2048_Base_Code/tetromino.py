@@ -22,6 +22,31 @@ class Tetromino:
          occupied_cells.append((1, 1))
          occupied_cells.append((1, 2))
          occupied_cells.append((1, 3))
+
+      if self.type == 'I-90':
+         n = 4  # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino I in its initial rotation state
+         occupied_cells.append((0, 1))  # (column_index, row_index)
+         occupied_cells.append((1, 1))
+         occupied_cells.append((2, 1))
+         occupied_cells.append((3, 1))
+      
+      if self.type == 'I-180':
+         n = 4  # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino I in its initial rotation state
+         occupied_cells.append((1, 0))  # (column_index, row_index)
+         occupied_cells.append((1, 1))
+         occupied_cells.append((1, 2))
+         occupied_cells.append((1, 3))
+
+      if self.type == 'I-270':
+         n = 4  # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino I in its initial rotation state
+         occupied_cells.append((0, 2))  # (column_index, row_index)
+         occupied_cells.append((1, 2))
+         occupied_cells.append((2, 2))
+         occupied_cells.append((3, 2))
+
       elif self.type == 'O':
          n = 2  # n = number of rows = number of columns in the tile matrix
          # shape of the tetromino O in its initial rotation state
@@ -29,37 +54,157 @@ class Tetromino:
          occupied_cells.append((1, 0))
          occupied_cells.append((0, 1))
          occupied_cells.append((1, 1))
+
       elif self.type == 'Z':
+         n = 3  # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino Z in1its initial rotation state
+         occupied_cells.append((0, 0))  # (column_index, row_index)
+         occupied_cells.append((1, 0))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((2, 1))
+
+      elif self.type == 'Z-90':
+         n = 3  # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino Z in1its initial rotation state
+         occupied_cells.append((2, 0))  # (column_index, row_index)
+         occupied_cells.append((1,1))
+         occupied_cells.append((2, 1))
+         occupied_cells.append((1, 2))
+
+      elif self.type == 'Z-180':
          n = 3  # n = number of rows = number of columns in the tile matrix
          # shape of the tetromino Z in its initial rotation state
          occupied_cells.append((0, 1))  # (column_index, row_index)
          occupied_cells.append((1, 1))
-         occupied_cells.append((1, 2))
+         occupied_cells.append((1,2))
          occupied_cells.append((2, 2))
+
+      elif self.type == 'Z-270':
+         n = 3  # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino Z in its initial rotation state
+         occupied_cells.append((1, 0))  # (column_index, row_index)
+         occupied_cells.append((0, 1))
+         occupied_cells.append((1,1))
+         occupied_cells.append((0, 2))
+      
+
       elif self.type == 'T':
          n=3
          occupied_cells.append((0, 1))
          occupied_cells.append((1, 1))
-         occupied_cells.append((2, 2))
+         occupied_cells.append((2, 1))
+         occupied_cells.append((1, 2))
+
+      elif self.type == 'T-90':
+         n=3
+         occupied_cells.append((1, 0))
+         occupied_cells.append((0, 1))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((1, 2))
+
+      elif self.type == 'T-180':
+         n=3
+         occupied_cells.append((1, 0))
+         occupied_cells.append((0, 1))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((2, 1))
+
+      elif self.type == 'T-270':
+         n=3
+         occupied_cells.append((1, 0))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((2, 1))
+         occupied_cells.append((1, 2))
+
+
       elif self.type == 'J':
          n=3
+         occupied_cells.append((1, 0))
          occupied_cells.append((1, 1))
+         occupied_cells.append((1, 2))
          occupied_cells.append((0, 2))
+
+      elif self.type == 'J-90':
+         n=3
+         occupied_cells.append((0, 0))
+         occupied_cells.append((0, 1))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((2, 1))
+      
+      elif self.type == 'J-180':
+         n=3
+         occupied_cells.append((1, 0))
+         occupied_cells.append((2, 0))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((1, 2))
+
+      elif self.type == 'J-270':
+         n=3
+         occupied_cells.append((0, 1))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((2, 1))
+         occupied_cells.append((2, 2))
+
+      elif self.type == 'L':
+         n = 3  # n değişkeni tanımlandı
+         occupied_cells.append((1, 0))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((1, 2))
+         occupied_cells.append((2, 2))
          occupied_cells.append((0, 2))
          occupied_cells.append((1, 2))
 
-      elif self.type == 'L':
+
+
+      elif self.type == 'L-90':
          n=3
+         occupied_cells.append((0, 1))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((2, 1))
+         occupied_cells.append((0, 2))
+      elif self.type == 'L-180':
+         n=3
+         occupied_cells.append((0, 0))
+         occupied_cells.append((1, 0))
          occupied_cells.append((1, 1))
          occupied_cells.append((1, 2))
-         occupied_cells.append((0, 2))
-         occupied_cells.append((1, 2))
+      elif self.type == 'L-270':
+         n=3
+         occupied_cells.append((2, 0))
+         occupied_cells.append((0, 1))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((2, 1))
+
+      
+
+      
 
       elif self.type == 'S':
          n=3
+         occupied_cells.append((1, 0))
+         occupied_cells.append((2, 0))
+         occupied_cells.append((0, 1))
          occupied_cells.append((1, 1))
-         occupied_cells.append((1, 2))
-         occupied_cells.append((1, 2))
+
+      elif self.type == 'S-90':
+         n=3
+         occupied_cells.append((1, 0))
+         occupied_cells.append((2, 2))
+         occupied_cells.append((0, 1))
+         occupied_cells.append((1, 1))
+
+      elif self.type == 'S-180':
+         n=3
+         occupied_cells.append((1, 0))
+         occupied_cells.append((1, 1))
+         occupied_cells.append((2, 1))
+         occupied_cells.append((2, 2))
+
+      elif self.type == 'S-270':
+         n=3
+         occupied_cells.append((0, 0))
+         occupied_cells.append((0, 1))
+         occupied_cells.append((1, 1))
          occupied_cells.append((1, 2))
       # create a matrix of numbered tiles based on the shape of this tetromino
       self.tile_matrix = np.full((n, n), None)
@@ -133,6 +278,38 @@ class Tetromino:
                # draw only the tiles that are inside the game grid
                if position.y < Tetromino.grid_height:
                   self.tile_matrix[row][col].draw(position)
+
+   def rotate(self, game_grid):
+      # O tipi tetromino döndürme gerektirmez
+      if self.type == 'O':
+         return True
+
+      # Her tetromino türü için dönüş rotasyonlarının tanımlandığı harita
+      rotation_mapping = {
+         'I': 'I-90', 'I-90': 'I-180', 'I-180': 'I-270', 'I-270': 'I',
+         'Z': 'Z-90', 'Z-90': 'Z-180', 'Z-180': 'Z-270', 'Z-270': 'Z',
+         'T': 'T-90', 'T-90': 'T-180', 'T-180': 'T-270', 'T-270': 'T',
+         'J': 'J-90', 'J-90': 'J-180', 'J-180': 'J-270', 'J-270': 'J',
+         'L': 'L-90', 'L-90': 'L-180', 'L-180': 'L-270', 'L-270': 'L',
+         'S': 'S-90', 'S-90': 'S-180', 'S-180': 'S-270', 'S-270': 'S'
+      }
+
+      # Mevcut duruma göre yeni type'ı belirle
+      new_type = rotation_mapping.get(self.type, self.type)
+
+      # Yeni rotasyon durumunu oluştur
+      temp = Tetromino(new_type)
+      temp.bottom_left_cell = self.bottom_left_cell
+
+      # Döndürme işlemini uygula
+      self.type = new_type
+      self.tile_matrix = temp.tile_matrix
+      return True
+
+
+
+
+
 
    # A method for moving this tetromino in a given direction by 1 on the grid
    def move(self, direction, game_grid):

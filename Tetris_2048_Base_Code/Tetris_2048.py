@@ -10,6 +10,7 @@ from lib.color import Color  # used for coloring the game menu
 import os  # the os module is used for file and directory operations
 from game_grid import GameGrid  # the class for modeling the game grid
 from tetromino import Tetromino  # the class for modeling the tetrominoes
+from point import Point  # Add this import for Point class
 import random  # used for creating tetrominoes with random types (shapes)
 
 # The main function where this program starts execution
@@ -17,10 +18,10 @@ def start():
    # set the dimensions of the game grid
    grid_h, grid_w = 20, 12
    # set the size of the drawing canvas (the displayed window)
-   canvas_h, canvas_w = 40 * grid_h, 40 * grid_w
+   canvas_h, canvas_w = 40 * grid_h, 40 * (grid_w + 6)  # Added width for next tetromino
    stddraw.setCanvasSize(canvas_w, canvas_h)
    # set the scale of the coordinate system for the drawing canvas
-   stddraw.setXscale(-0.5, grid_w - 0.5)
+   stddraw.setXscale(-0.5, grid_w + 5.5)  # Extended scale to show next tetromino
    stddraw.setYscale(-0.5, grid_h - 0.5)
 
    # set the game grid dimension values stored and used in the Tetromino class
@@ -30,7 +31,9 @@ def start():
    grid = GameGrid(grid_h, grid_w)
    # create the first tetromino to enter the game grid
    # by using the create_tetromino function defined below
+   # create the first tetromino and next tetromino
    current_tetromino = create_tetromino()
+   next_tetromino = create_tetromino()  # Add this line
    grid.current_tetromino = current_tetromino
 
    # display a simple menu before opening the game
@@ -53,13 +56,16 @@ def start():
          # if the down arrow key has been pressed
          elif key_typed == "down":
             # move the active tetromino down by one
-            # (soft drop: causes the tetromino to fall down faster)
             current_tetromino.move(key_typed, grid)
+         elif key_typed == "up":
+            current_tetromino.rotate(grid)  # Removed key_typed parameter
+            
          # clear the queue of the pressed keys for a smoother interaction
          stddraw.clearKeysTyped()
 
       # move the active tetromino down by one at each iteration (auto fall)
       success = current_tetromino.move("down", grid)
+      
       # lock the active tetromino onto the grid when it cannot go down anymore
       if not success:
          # get the tile matrix of the tetromino without empty rows and columns
@@ -72,11 +78,14 @@ def start():
             break
          # create the next tetromino to enter the game grid
          # by using the create_tetromino function defined below
-         current_tetromino = create_tetromino()
+         current_tetromino = next_tetromino
+         next_tetromino = create_tetromino()  # Create new next tetromino
          grid.current_tetromino = current_tetromino
 
-      # display the game grid with the current tetromino
+      # display the game grid and next tetromino
       grid.display()
+      draw_next_tetromino(next_tetromino)  # Add this line
+      stddraw.show(50)  # Add this to update the display
 
    # print a message on the console when the game is over
    print("Game over")
@@ -84,7 +93,12 @@ def start():
 # A function for creating random shaped tetrominoes to enter the game grid
 def create_tetromino():
    # the type (shape) of the tetromino is determined randomly
-   tetromino_types = ['I', 'O', 'Z', 'S', 'J', 'L', 'T']
+   tetromino_types = ['I', 'I-90', 'I-270', 'I-180', 'O',
+                     'Z', 'Z-90', 'Z-180', 'Z-270', 
+                     'T', 'T-90', 'T-180', 'T-270',  # Virgül eklendi
+                     'J', 'J-90', 'J-180', 'J-270',
+                     'L', 'L-90', 'L-180', 'L-270',
+                     'S', 'S-90', 'S-180', 'S-270']
    random_index = random.randint(0, len(tetromino_types) - 1)
    random_type = tetromino_types[random_index]
    # create and return the tetromino
@@ -135,6 +149,35 @@ def display_game_menu(grid_height, grid_width):
          if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
             if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h:
                break  # break the loop to end the method and start the game
+
+def draw_next_tetromino(tetromino):
+    # Panel position and size
+    panel_start_x = Tetromino.grid_width + 0.5  # Moved closer to grid
+    panel_start_y = Tetromino.grid_height - 8   # Moved down a bit
+    panel_width = 4
+    panel_height = 4
+    
+    # Draw panel background
+    stddraw.setPenColor(Color(42, 69, 99))
+    stddraw.filledRectangle(panel_start_x, panel_start_y, panel_width, panel_height)
+    
+    # Draw "Next" text
+    stddraw.setPenColor(Color(31, 160, 239))
+    stddraw.text(panel_start_x + panel_width/2, panel_start_y + panel_height + 0.5, "Next")
+    
+    # Center the tetromino in the panel
+    n = len(tetromino.tile_matrix)
+    start_x = panel_start_x + (panel_width - n) / 2
+    start_y = panel_start_y + (panel_height - n) / 2
+    
+    # Draw tetromino
+    for row in range(n):
+        for col in range(n):
+            if tetromino.tile_matrix[row][col] is not None:
+                pos_x = start_x + col
+                pos_y = start_y + (n - 1 - row)
+                tetromino.tile_matrix[row][col].draw(Point(pos_x, pos_y))
+
 
 
 # start() function is specified as the entry point (main function) from which
