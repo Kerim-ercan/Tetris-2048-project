@@ -15,6 +15,7 @@ class GameGrid:
         self.boundary_color = Color(0, 100, 200)
         self.line_thickness = 0.002
         self.box_thickness = 10 * self.line_thickness
+        self.score = 0
 
     def display(self):
         stddraw.clear(self.empty_cell_color)
@@ -23,6 +24,10 @@ class GameGrid:
             self.current_tetromino.draw()
         self.draw_boundaries()
         stddraw.show(250)
+        stddraw.setPenColor(Color(255, 255, 255))  # Beyaz renk
+        stddraw.setFontFamily("Arial")
+        stddraw.setFontSize(18)
+        stddraw.text(self.grid_width + 2, self.grid_height - 1, f"Score: {self.score}")
 
     def draw_grid(self):
         for row in range(self.grid_height):
@@ -71,6 +76,7 @@ class GameGrid:
         self._merge_tiles()
         # Clear any full rows
         self._clear_full_rows()
+        
         return self.game_over
 
     def _merge_tiles(self):
@@ -82,8 +88,10 @@ class GameGrid:
                 top = self.tile_matrix[row+1][col]
                 if bottom and top and bottom.number == top.number:
                     # Merge into bottom
-                    bottom.number *= 2
+                    merged_value = bottom.number * 2
+                    bottom.number = merged_value
                     bottom.update_colors()
+                    self.score += merged_value  # merge puanı   
                     # Shift everything above down
                     for r in range(row+1, self.grid_height-1):
                         self.tile_matrix[r][col] = self.tile_matrix[r+1][col]
@@ -93,16 +101,21 @@ class GameGrid:
                     row += 1
 
     def _clear_full_rows(self):
-        # Detect and clear full horizontal rows
         row = 0
         while row < self.grid_height:
             if all(self.tile_matrix[row, c] is not None for c in range(self.grid_width)):
-                # Clear this row
+                # PUAN EKLEMEK: Satırdaki taşların değerlerini topla
+                row_sum = sum(
+                    self.tile_matrix[row][c].number for c in range(self.grid_width) if self.tile_matrix[row][c] is not None
+                )
+                self.score += row_sum  # 👈 toplamı skora ekle
+
+                # Satırı temizle
                 self.tile_matrix[row, :] = [None] * self.grid_width
-                # Shift rows above down
-                for r in range(row, self.grid_height-1):
-                    self.tile_matrix[r, :] = self.tile_matrix[r+1, :]
-                self.tile_matrix[self.grid_height-1, :] = [None] * self.grid_width
-                # Stay on same row to check again after shift
+                # Üst satırları aşağı kaydır
+                for r in range(row, self.grid_height - 1):
+                    self.tile_matrix[r, :] = self.tile_matrix[r + 1, :]
+                self.tile_matrix[self.grid_height - 1, :] = [None] * self.grid_width
+                # Aynı satırı tekrar kontrol et
             else:
                 row += 1

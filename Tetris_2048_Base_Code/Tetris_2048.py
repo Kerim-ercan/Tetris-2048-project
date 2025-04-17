@@ -58,7 +58,9 @@ def start():
             # move the active tetromino down by one
             current_tetromino.move(key_typed, grid)
          elif key_typed == "up":
-            current_tetromino.rotate(grid)  # Removed key_typed parameter
+            current_tetromino.rotate(grid) 
+         elif key_typed == "space":
+            current_tetromino.hard_drop(grid) 
             
          # clear the queue of the pressed keys for a smoother interaction
          stddraw.clearKeysTyped()
@@ -80,6 +82,10 @@ def start():
             stddraw.setFontSize(50)
             stddraw.setPenColor(Color(255, 0, 0))
             stddraw.text((grid_w + 5) / 2, grid_h / 2, "GAME OVER")
+            stddraw.setFontSize(30)
+            stddraw.setPenColor(Color(255, 255, 255))
+            stddraw.text((grid_w + 5) / 2, grid_h / 2 - 1, f"Score: {grid.score}")
+
             stddraw.show(2000)   # 2 saniye bekle
 
             # 2) Başlangıç menüsüne dön
@@ -135,7 +141,9 @@ def display_game_menu(grid_height, grid_width):
    # compute the path of the image file
    img_file = current_dir + "/images/menu_image.png"
    # the coordinates to display the image centered horizontally
-   img_center_x, img_center_y = (grid_width - 1) / 2, grid_height - 7
+   img_center_x = (grid_width + 6) / 2  # tüm canvas'a göre ortala
+   img_center_y = grid_height - 7
+   
    # the image is modeled by using the Picture class
    image_to_display = Picture(img_file)
    # add the image to the drawing canvas

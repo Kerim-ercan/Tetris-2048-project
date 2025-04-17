@@ -266,6 +266,11 @@ class Tetromino:
          blc_position.translate(min_col, (n - 1) - max_row)
          return copy, blc_position
 
+   
+   def hard_drop(self, game_grid):
+    while self.move("down", game_grid):
+        pass
+
    # A method for drawing the tetromino on the game grid
    def draw(self):
       n = len(self.tile_matrix)  # n = number of rows = number of columns
@@ -300,11 +305,23 @@ class Tetromino:
       # Yeni rotasyon durumunu oluştur
       temp = Tetromino(new_type)
       temp.bottom_left_cell = self.bottom_left_cell
+      n = len(temp.tile_matrix)
+      for row in range(n):
+         for col in range(n):
+            if temp.tile_matrix[row][col] is not None:
+               pos = temp.get_cell_position(row, col)
+               if not (0 <= pos.x < Tetromino.grid_width and 0 <= pos.y < Tetromino.grid_height):
+                  return False  # grid dışına taşarsa rotasyon iptal
 
-      # Döndürme işlemini uygula
-      self.type = new_type
-      self.tile_matrix = temp.tile_matrix
-      return True
+               if game_grid.is_occupied(pos.y, pos.x):  # çakışma kontrolü
+                  return False
+
+         # Eğer sıkıntı yoksa rotasyonu uygula
+         self.type = new_type
+         self.tile_matrix = temp.tile_matrix
+         return True
+
+      
 
 
 
