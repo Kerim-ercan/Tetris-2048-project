@@ -70,12 +70,13 @@ def start():
       
       # lock the active tetromino onto the grid when it cannot go down anymore
       if not success:
-         # get the tile matrix of the tetromino without empty rows and columns
-         # and the position of the bottom left cell in this matrix
          tiles, pos = current_tetromino.get_min_bounded_tile_matrix(True)
-         # update the game grid by locking the tiles of the landed tetromino
          game_over = grid.update_grid(tiles, pos)
-         # end the main game loop if the game is over
+
+         # ✅ Next panel ve skor sadece burada güncellensin
+         draw_next_tetromino(next_tetromino)
+         last_drawn_next_tetromino = next_tetromino
+               # end the main game loop if the game is over
          if game_over:
             stddraw.clear(Color(0, 0, 0))
             stddraw.setFontFamily("Arial")
@@ -85,8 +86,7 @@ def start():
             stddraw.setFontSize(30)
             stddraw.setPenColor(Color(255, 255, 255))
             stddraw.text((grid_w + 5) / 2, grid_h / 2 - 1, f"Score: {grid.score}")
-
-            stddraw.show(2000)   # 2 saniye bekle
+            stddraw.show(2000)
 
             # 2) Başlangıç menüsüne dön
             display_game_menu(grid_h, grid_w)
@@ -96,22 +96,41 @@ def start():
             current_tetromino = create_tetromino()
             next_tetromino = create_tetromino()
             grid.current_tetromino = current_tetromino
-
-            # Döngünün başına dön ve yeniden oyna
-            continue
-         # create the next tetromino to enter the game grid
-         # by using the create_tetromino function defined below
-         current_tetromino = next_tetromino
-         next_tetromino = create_tetromino()  # Create new next tetromino
-         grid.current_tetromino = current_tetromino
+         else:
+            # create the next tetromino to enter the game grid
+            current_tetromino = next_tetromino
+            next_tetromino = create_tetromino()  # Create new next tetromino
+            grid.current_tetromino = current_tetromino
 
       # display the game grid and next tetromino
-      grid.display()
-      draw_next_tetromino(next_tetromino)  # Add this line
-      stddraw.show(50)  # Add this to update the display
+      grid.display()  # GameGrid.display() metodunu güncellememiz gerekecek
+      draw_next_tetromino(next_tetromino)  # Next tetromino çizimi
+      
+      
+      # Score gösterimi - sabit bir konumda
+      draw_score(grid.score, grid_w)  # Yeni bir fonksiyon ekliyoruz
+      
+      stddraw.show(300)  # Ekranı güncelle
 
    # print a message on the console when the game is over
    print("Game over")
+
+def draw_score(score, grid_width):
+    # Score panelini çiz
+    panel_x = grid_width + 0.5
+    panel_y = 2  # Alt kısımda göster
+    
+    # Score başlığı
+    stddraw.setPenColor(Color(31, 160, 239))
+    stddraw.text(panel_x + 2, panel_y + 1.5, "Score")
+    
+    # Score değeri
+    stddraw.setPenColor(Color(255, 255, 255))
+    stddraw.text(panel_x + 2, panel_y + 0.5, str(score))
+
+
+
+
 
 # A function for creating random shaped tetrominoes to enter the game grid
 def create_tetromino():
@@ -164,7 +183,7 @@ def display_game_menu(grid_height, grid_width):
    # the user interaction loop for the simple menu
    while True:
       # display the menu and wait for a short time (50 ms)
-      stddraw.show(50)
+      stddraw.show(300)
       # check if the mouse has been left-clicked on the start game button
       if stddraw.mousePressed():
          # get the coordinates of the most recent location at which the mouse

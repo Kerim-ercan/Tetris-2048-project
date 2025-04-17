@@ -17,14 +17,14 @@ class GameGrid:
         self.box_thickness = 10 * self.line_thickness
         self.score = 0
 
-    def display(self):
-        stddraw.clear(self.empty_cell_color)
+    def display(self, clear_screen=True):
+        if clear_screen:
+            stddraw.clear(self.empty_cell_color)
         self.draw_grid()
         if self.current_tetromino is not None:
             self.current_tetromino.draw()
         self.draw_boundaries()
-        stddraw.show(250)
-        stddraw.setPenColor(Color(255, 255, 255))  # Beyaz renk
+        stddraw.setPenColor(Color(255, 255, 255))
         stddraw.setFontFamily("Arial")
         stddraw.setFontSize(18)
         stddraw.text(self.grid_width + 2, self.grid_height - 1, f"Score: {self.score}")
