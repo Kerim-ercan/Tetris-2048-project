@@ -75,7 +75,24 @@ def start():
          game_over = grid.update_grid(tiles, pos)
          # end the main game loop if the game is over
          if game_over:
-            break
+            stddraw.clear(Color(0, 0, 0))
+            stddraw.setFontFamily("Arial")
+            stddraw.setFontSize(50)
+            stddraw.setPenColor(Color(255, 0, 0))
+            stddraw.text((grid_w + 5) / 2, grid_h / 2, "GAME OVER")
+            stddraw.show(2000)   # 2 saniye bekle
+
+            # 2) Başlangıç menüsüne dön
+            display_game_menu(grid_h, grid_w)
+
+            # 3) Yeni bir oyun başlatmak için grid ve tetrominoları resetle
+            grid = GameGrid(grid_h, grid_w)
+            current_tetromino = create_tetromino()
+            next_tetromino = create_tetromino()
+            grid.current_tetromino = current_tetromino
+
+            # Döngünün başına dön ve yeniden oyna
+            continue
          # create the next tetromino to enter the game grid
          # by using the create_tetromino function defined below
          current_tetromino = next_tetromino
