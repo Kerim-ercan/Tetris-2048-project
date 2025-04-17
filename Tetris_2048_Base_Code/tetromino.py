@@ -300,26 +300,28 @@ class Tetromino:
       }
 
       # Mevcut duruma göre yeni type'ı belirle
-      new_type = rotation_mapping.get(self.type, self.type)
-
-      # Yeni rotasyon durumunu oluştur
+      new_type = rotation_mapping[self.type]
       temp = Tetromino(new_type)
       temp.bottom_left_cell = self.bottom_left_cell
+
       n = len(temp.tile_matrix)
       for row in range(n):
          for col in range(n):
-            if temp.tile_matrix[row][col] is not None:
+               if temp.tile_matrix[row][col] is None:
+                  continue
                pos = temp.get_cell_position(row, col)
-               if not (0 <= pos.x < Tetromino.grid_width and 0 <= pos.y < Tetromino.grid_height):
-                  return False  # grid dışına taşarsa rotasyon iptal
 
-               if game_grid.is_occupied(pos.y, pos.x):  # çakışma kontrolü
+               # Sınır ve çakışma kontrolleri
+               if not (0 <= pos.x < Tetromino.grid_width and
+                     0 <= pos.y < Tetromino.grid_height):
+                  return False
+               if game_grid.is_occupied(pos.y, pos.x):
                   return False
 
-         # Eğer sıkıntı yoksa rotasyonu uygula
-         self.type = new_type
-         self.tile_matrix = temp.tile_matrix
-         return True
+      # ←  Döngüler bitti, hâlâ buradaysak rotasyon güvenli
+      self.type = new_type
+      self.tile_matrix = temp.tile_matrix
+      return True
 
       
 
