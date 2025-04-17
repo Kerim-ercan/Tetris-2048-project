@@ -13,8 +13,37 @@ from tetromino import Tetromino  # the class for modeling the tetrominoes
 from point import Point  # Add this import for Point class
 import random  # used for creating tetrominoes with random types (shapes)
 
+def draw_rounded_rect(blc_x, blc_y, w, h, r, color): # added for the start game button to make radius
+    """
+    blc_x, blc_y : sol‑alt köşe
+    w, h         : genişlik, yükseklik
+    r            : köşe yarıçapı
+    color        : Color objesi
+    """
+    stddraw.setPenColor(color)
+    # Orta gövde
+    stddraw.filledRectangle(blc_x + r, blc_y,      w - 2*r, h)
+    # Sol‑sağ band
+    stddraw.filledRectangle(blc_x,      blc_y + r, r,       h - 2*r)
+    stddraw.filledRectangle(blc_x + w - r, blc_y + r, r,    h - 2*r)
+    # 4 köşe
+    stddraw.filledCircle(blc_x + r,      blc_y + r,      r)
+    stddraw.filledCircle(blc_x + w - r,  blc_y + r,      r)
+    stddraw.filledCircle(blc_x + r,      blc_y + h - r,  r)
+    stddraw.filledCircle(blc_x + w - r,  blc_y + h - r,  r)
+
+
+
+
 # The main function where this program starts execution
 def start():
+   
+   paused            = False
+   pause_blink_on    = True
+   pause_frame_count = 0         # kaç kare geçti?
+   BLINK_FRAMES      = 5         # 5×100 ms ≈ 0.5 sn
+
+
    # set the dimensions of the game grid
    grid_h, grid_w = 20, 12
    # set the size of the drawing canvas (the displayed window)
@@ -42,6 +71,46 @@ def start():
 
    # the main game loop
    while True:
+      if paused:
+            pause_frame_count += 1
+            if pause_frame_count >= BLINK_FRAMES:
+                pause_frame_count = 0
+                pause_blink_on = not pause_blink_on
+
+            grid.display()
+            draw_next_tetromino(next_tetromino)
+            draw_score(grid.score, grid_w)
+
+            if pause_blink_on:
+                stddraw.setPenColor(Color(255, 255, 255))
+                stddraw.setFontFamily("Arial")
+                stddraw.setFontSize(60)
+                stddraw.text((grid_w + 5) / 2, grid_h / 2, "PAUSE")
+
+            if stddraw.hasNextKeyTyped():
+               key = stddraw.nextKeyTyped()
+               if key == "escape":
+                  # 3‑2‑1 geri sayım
+                  for cnt in range(3, 0, -1):
+                     grid.display()
+                     draw_next_tetromino(next_tetromino)
+                     draw_score(grid.score, grid_w)
+                     stddraw.setPenColor(Color(255, 255, 255))
+                     stddraw.setFontFamily("Arial")
+                     stddraw.setFontSize(60)
+                     stddraw.text((grid_w + 5) / 2, grid_h / 2, str(cnt))
+                     stddraw.show(1000)      # 1 sn
+                  paused = False
+                  stddraw.clearKeysTyped()
+                  continue        # geri sayım sonrası normal akış
+
+            stddraw.show(100)
+            continue        # oyun mantığını atla
+            
+
+
+
+
       # check for any user interaction via the keyboard
       if stddraw.hasNextKeyTyped():  # check if the user has pressed a key
          key_typed = stddraw.nextKeyTyped()  # the most recently pressed key
@@ -61,6 +130,23 @@ def start():
             current_tetromino.rotate(grid) 
          elif key_typed == "space":
             current_tetromino.hard_drop(grid) 
+         elif key_typed == "escape":
+            if not paused:               # DURDUR
+               paused = True
+               pause_blink_on = True
+               pause_frame_count = 0
+            else:                        # GERİ SAY → DEVAM
+               for cnt in range(3, 0, -1):
+                     grid.display()
+                     draw_next_tetromino(next_tetromino)
+                     draw_score(grid.score, grid_w)
+                     stddraw.setPenColor(Color(255, 255, 255))
+                     stddraw.setFontFamily("Arial")
+                     stddraw.setFontSize(60)
+                     stddraw.text((grid_w + 5) / 2, grid_h / 2, str(cnt))
+                     stddraw.show(1000)   # 1 saniye bekletir → time yok
+               paused = False
+               stddraw.clearKeysTyped()
             
          # clear the queue of the pressed keys for a smoother interaction
          stddraw.clearKeysTyped()
@@ -150,9 +236,9 @@ def create_tetromino():
 # A function for displaying a simple menu before starting the game
 def display_game_menu(grid_height, grid_width):
    # the colors used for the menu
-   background_color = Color(42, 69, 99)
-   button_color = Color(25, 255, 228)
-   text_color = Color(31, 160, 239)
+   background_color = Color(0, 48, 146)
+   button_color = Color(0, 135, 138)
+   text_color = Color(255, 255, 255)
    # clear the background drawing canvas to background_color
    stddraw.clear(background_color)
    # get the directory in which this python code file is placed
@@ -172,8 +258,8 @@ def display_game_menu(grid_height, grid_width):
    # the coordinates of the bottom left corner for the start game button
    button_blc_x, button_blc_y = img_center_x - button_w / 2, 4
    # add the start game button as a filled rectangle
-   stddraw.setPenColor(button_color)
-   stddraw.filledRectangle(button_blc_x, button_blc_y, button_w, button_h)
+   draw_rounded_rect(button_blc_x, button_blc_y, button_w, button_h,
+                  r=0.5, color=button_color)   # 0.5 → köşe yarıçapı
    # add the text on the start game button
    stddraw.setFontFamily("Arial")
    stddraw.setFontSize(25)
@@ -196,31 +282,35 @@ def display_game_menu(grid_height, grid_width):
 
 def draw_next_tetromino(tetromino):
     # Panel position and size
-    panel_start_x = Tetromino.grid_width + 0.5  # Moved closer to grid
-    panel_start_y = Tetromino.grid_height - 8   # Moved down a bit
-    panel_width = 4
-    panel_height = 4
+    panel_x = Tetromino.grid_width + 0.5
+    panel_y = Tetromino.grid_height - 8
+    panel_w = 4
+    panel_h = 4
     
     # Draw panel background
-    stddraw.setPenColor(Color(42, 69, 99))
-    stddraw.filledRectangle(panel_start_x, panel_start_y, panel_width, panel_height)
+    stddraw.setPenColor(Color(255, 171, 91))
+    stddraw.filledRectangle(panel_x, panel_y, panel_w, panel_h)
     
     # Draw "Next" text
-    stddraw.setPenColor(Color(31, 160, 239))
-    stddraw.text(panel_start_x + panel_width/2, panel_start_y + panel_height + 0.5, "Next")
+    stddraw.setPenColor(Color(255, 255, 255))
+    stddraw.text(panel_x + panel_w/2, panel_y + panel_h + 0.5, "Next")
     
     # Center the tetromino in the panel
-    n = len(tetromino.tile_matrix)
-    start_x = panel_start_x + (panel_width - n) / 2
-    start_y = panel_start_y + (panel_height - n) / 2
-    
-    # Draw tetromino
-    for row in range(n):
-        for col in range(n):
-            if tetromino.tile_matrix[row][col] is not None:
-                pos_x = start_x + col
-                pos_y = start_y + (n - 1 - row)
-                tetromino.tile_matrix[row][col].draw(Point(pos_x, pos_y))
+     # 1) Boş satır/sütunları at – sadece gerçek şekil kalsın
+    matrix = tetromino.get_min_bounded_tile_matrix()     # ✔ file7
+    h, w = len(matrix), len(matrix[0])
+
+    # 2) Merkezi 0.5 birim içeri al ki karelerin kenarı tam sınırı öpmesin
+    start_x = panel_x + (panel_w - w) / 2 + 0.5
+    start_y = panel_y + (panel_h - h) / 2 + 0.5
+
+    # 3) Çiz
+    for r in range(h):
+        for c in range(w):
+            if matrix[r][c] is not None:
+                pos_x = start_x + c
+                pos_y = start_y + (h - 1 - r)
+                matrix[r][c].draw(Point(pos_x, pos_y))
 
 
 

@@ -10,9 +10,9 @@ class GameGrid:
         self.tile_matrix = np.full((grid_h, grid_w), None)
         self.current_tetromino = None
         self.game_over = False
-        self.empty_cell_color = Color(42, 69, 99)
-        self.line_color = Color(0, 100, 200)
-        self.boundary_color = Color(0, 100, 200)
+        self.empty_cell_color = Color(0, 48, 146)
+        self.line_color = Color(0, 135, 158)
+        self.boundary_color = Color(0, 135, 158)
         self.line_thickness = 0.002
         self.box_thickness = 10 * self.line_thickness
         self.score = 0
