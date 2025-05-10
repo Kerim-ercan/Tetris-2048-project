@@ -1,0 +1,4 @@
+https://github.com/Kerim-ercan/Tetris-2048-project
+
+I have successfully added the account gokmenm@mef.edu.tr to the GitHub repository for the Tetris-2048 project: https://github.com/Kerim-ercan/Tetris-2048-project.
+However, I was unable to add the other instructors' accounts.
